@@ -22,7 +22,7 @@ void criarPiramide(short linhas) {
     int i, contador = 1;
 
     for (i = linhas; i > 0; i--) {
-        inserirEspacos(i - 1);
+        inserirEspacos((i - 1) * 2);
 
         // Printar numero
         inserirNumeros(contador);
@@ -45,5 +45,8 @@ void inserirNumeros(short num) {
 
     for (i = 0; i < (num * 2) - 1; i++) {
         printf("%hd", num);
+        if (num < 10) {
+            printf(" ");
+        }
     }
 }
