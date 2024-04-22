@@ -14,41 +14,29 @@
 int main() {
     short i, j;
     int mat[N][N];
-    int somaL, somaC, valoresDS[N];
+    int somaL, somaC;
     int maior = 0, somaDP = 0;
 
     srand(time(NULL));
     for (i = 0; i < N; i++) {
+        somaL = 0;
         for (j = 0; j < N; j++) {
-            mat[i][j] = rand() % 51;
+            mat[i][j] = rand() % 11;
+
+            somaL += mat[i][j];
 
             if (i == j) {
                 somaDP += mat[i][j];
-            }
-
-            if (i + j == N - 1) {
-                valoresDS[i] = mat[i][j];
             }
 
             if (maior < mat[i][j]) {
                 maior = mat[i][j];
             }
 
-            printf("%2d, ", mat[i][j]);
+            printf("%2d ", mat[i][j]);
         }
 
-        printf("\n");
-    }
-
-    printf("\n");
-    
-    printf("Soma por linha:\n");
-    for (i = 0; i < N; i++) {
-        somaL = 0;
-        for (j = 0; j < N; j++) {
-            somaL += mat[i][j];
-        }
-        printf("- Linha %d = %d\n", i+1, somaL);
+        printf("= %d\n", somaL);
     }
 
     printf("\n");
@@ -69,7 +57,7 @@ int main() {
     printf("O maior valor foi: %d\n", maior);
     printf("Valores da diagonal secundaria: ");
     for (i = 0; i < N; i++) {
-        printf("%d, ", valoresDS[i]);
+        printf("%d ", mat[N-1-i][i]);
     }
     
     return 0;
