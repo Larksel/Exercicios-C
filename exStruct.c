@@ -20,14 +20,17 @@ int main() {
     struct Aluno Alunos[N];
 
     for (i = 0; i < N; i++) {
-        Alunos[i].codigo = i+1;
-        printf("Digite o nome do aluno %d: ", i+1);
-        scanf("%s", &Alunos[i].nome);
-        Alunos[i].media = 99.9;
+        printf("Digite o codigo do Aluno: ");
+        scanf("%d", &Alunos[i].codigo);
+        printf("Digite o nome do Aluno: ");
+        scanf("%s", Alunos[i].nome);
+        printf("Digite a media: ");
+        scanf("%f", &Alunos[i].media);
 
+    }
+    for (i = 0; i < N; i++) {
         printAluno(Alunos[i]);
     }
-
 
 
     return 0;
