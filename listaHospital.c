@@ -9,12 +9,12 @@ struct Paciente
 typedef struct Paciente Paciente;
 
 int menu(int *opcao);
-int inserir(Paciente fila[], int IA, int FA, int *IL, int *FL, Paciente paciente);
+int inserir(Paciente fila[], int IA, int FA, int *IL, int *FL);
 int atenderPaciente(Paciente filaNormal[], Paciente filaEmergencia[], int *ILNormal, int *FLNormal, int *ILEmer, int *FLEmer);
 int mostrarFilas(Paciente filaNormal[], Paciente filaEmergencia[], int IA, int FA, int ILNormal, int FLNormal, int ILEmer, int FLEmer);
 
 int main() {
-    Paciente filaNormal[N], filaEmergencia[N], paciente;
+    Paciente filaNormal[N], filaEmergencia[N];
     int IA = 0, FA = N - 1, ILNormal = -1, FLNormal = -1, ILEmer = -1, FLEmer = -1, opcao;
 
     do {
@@ -24,16 +24,13 @@ int main() {
         {
         case 1:
             printf("Inserindo na fila normal...\n");
-            printf("Codigo: "); scanf("%d",&paciente.codigo);
-            printf("Nome: "); scanf("%s",paciente.nome);
-            inserir(filaNormal, IA, FA, &ILNormal, &FLNormal, paciente);
+            
+            inserir(filaNormal, IA, FA, &ILNormal, &FLNormal);
             break;
 
         case 2:
             printf("Inserindo na fila de emergencia...\n");
-            printf("Codigo: "); scanf("%d",&paciente.codigo);
-            printf("Nome: "); scanf("%s",paciente.nome);
-            inserir(filaEmergencia, IA, FA, &ILEmer, &FLEmer, paciente);
+            inserir(filaEmergencia, IA, FA, &ILEmer, &FLEmer);
             break;
 
         case 3:
@@ -70,8 +67,11 @@ int menu(int *opcao)
     return 0;
 }
 
-int inserir(Paciente fila[], int IA, int FA, int *IL, int *FL, Paciente paciente) {
+int inserir(Paciente fila[], int IA, int FA, int *IL, int *FL) {
     int i;
+    Paciente paciente;
+
+    
     
     if (IA == *IL && FA == *FL) { // Cheia
         printf("Lista cheia. Cancelando...\n");
@@ -79,6 +79,9 @@ int inserir(Paciente fila[], int IA, int FA, int *IL, int *FL, Paciente paciente
     }
     else 
     {
+        printf("Codigo: "); scanf("%d",&paciente.codigo);
+        printf("Nome: "); scanf("%s",paciente.nome);
+
         if (*IL == -1) // Vazia
             *IL = *FL = FA;
         else if (*FL < FA) // Espaço disponível
