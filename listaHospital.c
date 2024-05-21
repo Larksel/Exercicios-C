@@ -10,7 +10,7 @@ typedef struct Paciente Paciente;
 
 int menu(int *opcao);
 int inserir(Paciente fila[], int IA, int FA, int *IL, int *FL, Paciente paciente);
-int atenderPaciente();
+int atenderPaciente(Paciente filaNormal[], Paciente filaEmergencia[], int *ILNormal, int *FLNormal, int *ILEmer, int *FLEmer);
 int mostrarFilas(Paciente filaNormal[], Paciente filaEmergencia[], int IA, int FA, int ILNormal, int FLNormal, int ILEmer, int FLEmer);
 
 int main() {
@@ -24,20 +24,21 @@ int main() {
         {
         case 1:
             printf("Inserindo na fila normal...\n");
-            printf("Código: "); scanf("%d",&paciente.codigo);
+            printf("Codigo: "); scanf("%d",&paciente.codigo);
             printf("Nome: "); scanf("%s",paciente.nome);
             inserir(filaNormal, IA, FA, &ILNormal, &FLNormal, paciente);
             break;
 
         case 2:
             printf("Inserindo na fila de emergencia...\n");
-            printf("Código: "); scanf("%d",&paciente.codigo);
+            printf("Codigo: "); scanf("%d",&paciente.codigo);
             printf("Nome: "); scanf("%s",paciente.nome);
             inserir(filaEmergencia, IA, FA, &ILEmer, &FLEmer, paciente);
             break;
 
         case 3:
             printf("Atendendo paciente...\n");
+            atenderPaciente(filaNormal, filaEmergencia, &ILNormal, &FLNormal, &ILEmer, &FLEmer);
             break;
 
         case 4:
@@ -116,3 +117,28 @@ int mostrarFilas(Paciente filaNormal[], Paciente filaEmergencia[], int IA, int F
     return 0;
 }
 
+int atenderPaciente(Paciente filaNormal[], Paciente filaEmergencia[], int *ILNormal, int *FLNormal, int *ILEmer, int *FLEmer) {
+    Paciente paciente;
+    
+    if (*ILEmer != -1) {
+        paciente = filaEmergencia[*ILEmer];
+        printf("Paciente %s, da fila de emergencia, atendido\n", paciente.nome);
+
+        *ILEmer += 1;
+        if (*ILEmer > *FLEmer)
+            *ILEmer = *FLEmer = -1;
+
+    } else if (*ILNormal != -1) {
+        paciente = filaNormal[*ILNormal];
+        printf("Paciente %s, da fila normal, atendido\n", paciente.nome);
+
+        *ILNormal += 1;
+        if (*ILNormal > *FLNormal)
+            *ILNormal = *FLNormal = -1;
+        
+    } else {
+        printf("Nao ha pacientes esperando atendimento.\n");
+    }
+
+    return 0;
+}
