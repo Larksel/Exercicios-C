@@ -11,14 +11,14 @@ typedef struct ItemHist ItemHist;
 
 int menu();
 int adicionarPagina(ItemHist **ponteiroLista, char *url);
-int voltarPagina(ItemHist *ponteiroLista, int K);
+int voltarPagina(ItemHist **ponteiroLista);
 void exibirHistorico(ItemHist *ponteiroLista);
 
 int main() {
     ItemHist *ponteiroLista;
     ponteiroLista = NULL;
     char url[40];
-    int escolha, sucesso;
+    int sucesso, escolha;
 
     do {
         escolha = menu();
@@ -35,10 +35,15 @@ int main() {
             if(sucesso == 0)
                 printf("Pagina adicionada com sucesso\n");
             else
-                printf("Erro\n");
+                printf("Erro ao adicionar pagina\n");
             break;
         case 2:
             /* Voltar pagina */
+            sucesso = voltarPagina(&ponteiroLista);
+            if(sucesso == 0)
+                printf("Retornou para a pagina anterior\n");
+            else
+                printf("Erro ao retornar\n");
             break;
         case 3:
             /* Exibir historico */
@@ -49,7 +54,6 @@ int main() {
             break;
         }
     } while (escolha != 0);
-
 
     return 0;
 }
@@ -82,34 +86,26 @@ int adicionarPagina(ItemHist **ponteiroLista, char *url) {
 void exibirHistorico(ItemHist *ponteiroLista) {
     ItemHist *p;
 
-    for(p = ponteiroLista; p != NULL; p = p -> elo) {
-        printf("%s\n", p->url);
+    if (ponteiroLista != NULL) {
+        for(p = ponteiroLista; p != NULL; p = p -> elo) {
+            printf("%s\n", p->url);
+        }
+    } else {
+        printf("Lista vazia\n");
     }
+    
 }
 
-int voltarPagina(ItemHist *ponteiroLista, int K) {
-    if (K < 0) { // Posição inválida
+int voltarPagina(ItemHist **ponteiroLista) {
+    if (*ponteiroLista == NULL) { // Lista vazia, não tem o que tirar
+        printf("Lista vazia\n");
         return 1;
     } else {
-        ItemHist *PontK = ponteiroLista; // Ponteiro para guardar o endereço a ser removido
-        ItemHist *PontAnt = NULL;
+        ItemHist *PontAux = *ponteiroLista;
+        *ponteiroLista = (*ponteiroLista)->elo;
 
-        while (PontK != NULL && K > 0) { // Percorrer lista até a posição especificada
-            K -= 1;
-            PontAnt = PontK;
-            PontK = PontK->elo;
-        }
-        if (PontK == NULL) { // Posição não encontrada
-            return 1;
-        } else {
-            if (PontK == ponteiroLista) {
-                ponteiroLista = PontK->elo;
-            } else {
-                PontAnt->elo = PontK->elo;
-            }
-            free(PontK);
-            
-            return 0;
-        }
+        free(PontAux);
+
+        return 0;
     }
 }
