@@ -1,23 +1,21 @@
-/*
-    
-*/
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-struct Item{
+struct ItemHist{
     char url[40];
-    struct Item *elo;
+    struct ItemHist *elo;
 };
 
-typedef struct Item Item;
+typedef struct ItemHist ItemHist;
 
 int menu();
-int adicionarPagina(Item **ponteiroLista, char url[40]);
-int voltarPagina();
-void exibirHistorico(Item *ponteiroLista);
+int adicionarPagina(ItemHist **ponteiroLista, char *url);
+int voltarPagina(ItemHist *ponteiroLista, int K);
+void exibirHistorico(ItemHist *ponteiroLista);
 
 int main() {
-    Item *ponteiroLista;
+    ItemHist *ponteiroLista;
     ponteiroLista = NULL;
     char url[40];
     int escolha, sucesso;
@@ -35,9 +33,9 @@ int main() {
             sucesso = adicionarPagina(&ponteiroLista, url);
 
             if(sucesso == 0)
-                printf("\nDeu certo!!!\n");
+                printf("Pagina adicionada com sucesso\n");
             else
-                printf("\nErro!!!\n");
+                printf("Erro\n");
             break;
         case 2:
             /* Voltar pagina */
@@ -69,22 +67,49 @@ int menu() {
     return escolha;
 }
 
-int adicionarPagina(Item **ponteiroLista, char url[40]) {
-    Item* ponteiroNovo = (Item*) malloc(sizeof(Item));
+int adicionarPagina(ItemHist **ponteiroLista, char *url) {
+    ItemHist* ponteiroNovo = (ItemHist*) malloc(sizeof(ItemHist));
     if (ponteiroNovo == NULL) { // Memoria cheia
         return 1;
     } else {
-        ponteiroNovo->url = url;
+        strcpy(ponteiroNovo->url, url);
         ponteiroNovo->elo = *ponteiroLista;
         *ponteiroLista = ponteiroNovo;
         return 0;
     }
 }
 
-void exibirHistorico(Item *ponteiroLista) {
-    Item *p;
+void exibirHistorico(ItemHist *ponteiroLista) {
+    ItemHist *p;
 
     for(p = ponteiroLista; p != NULL; p = p -> elo) {
-        printf("%s\t", p->url);
+        printf("%s\n", p->url);
+    }
+}
+
+int voltarPagina(ItemHist *ponteiroLista, int K) {
+    if (K < 0) { // Posição inválida
+        return 1;
+    } else {
+        ItemHist *PontK = ponteiroLista; // Ponteiro para guardar o endereço a ser removido
+        ItemHist *PontAnt = NULL;
+
+        while (PontK != NULL && K > 0) { // Percorrer lista até a posição especificada
+            K -= 1;
+            PontAnt = PontK;
+            PontK = PontK->elo;
+        }
+        if (PontK == NULL) { // Posição não encontrada
+            return 1;
+        } else {
+            if (PontK == ponteiroLista) {
+                ponteiroLista = PontK->elo;
+            } else {
+                PontAnt->elo = PontK->elo;
+            }
+            free(PontK);
+            
+            return 0;
+        }
     }
 }
