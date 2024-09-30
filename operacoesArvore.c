@@ -1,5 +1,5 @@
 /*
-    
+    Por: Lemuel e Vinicius
 */
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,14 +8,104 @@ typedef struct noArvore {
     int valor;
     struct noArvore *Esq;
     struct noArvore *Dir;
+    int altura;
 } noArvore;
 
 int menu();
-noArvore* criarArvore();
-void alocarRaiz(noArvore **arvore, int valor);
-noArvore* localizar(noArvore *arvore, int valor);
-void exibirArvore(noArvore *raiz);
 
+int max(int a, int b)
+{
+    return a > b ? a : b;
+}
+
+noArvore* criarNo(int valor) {
+    noArvore* novoNo = (noArvore*) malloc(sizeof(noArvore));
+
+    novoNo->valor = valor;
+    novoNo->Esq = NULL;
+    novoNo->Dir = NULL;
+    novoNo->altura = 1;
+
+    return novoNo;
+}
+
+int altura(noArvore *no) {
+    if (no == NULL) {
+        return 0;
+    }
+    else {
+        return no->altura;
+    }
+}
+
+int fatorBalanceamento(noArvore *no) {
+    if (no == NULL)
+        return 0;
+    else
+        return altura(no->Esq) - altura(no->Dir);
+}
+
+void atualizarAltura(noArvore **no) {
+    if (*no == NULL)
+        return;
+
+    (*no)->altura = 1 + max(altura((*no)->Esq), altura((*no)->Dir));
+}
+
+noArvore* rotacaoSimplesDireita(noArvore *raiz) {
+    noArvore *novaRaiz = raiz->Esq;
+    noArvore *temp = novaRaiz->Dir;
+
+    novaRaiz->Dir = raiz;
+    raiz->Esq = temp;
+
+    atualizarAltura(raiz);
+    atualizarAltura(&novaRaiz);
+
+    return novaRaiz;
+}
+
+noArvore* rotacaoSimplesEsquerda(noArvore *raiz) {
+    noArvore *novaRaiz = raiz->Dir;
+    noArvore *temp = novaRaiz->Esq;
+
+    novaRaiz->Esq = raiz;
+    raiz->Dir = temp;
+
+    atualizarAltura(raiz);
+    atualizarAltura(&novaRaiz);
+
+    return novaRaiz;
+}
+
+noArvore* rotacaoDuplaDireita(noArvore *no) {
+    no->Dir = rotacaoSimpleDireita(no->Dir);
+    return rotacaoSimpleEsquerda(no);
+}
+
+noArvore* rotacaoDuplaEsquerda(noArvore *no) {
+    no->Esq = rotacaoSimpleEsquerda(no->Esq);
+    return rotacaoSimplesDireita(no);
+}
+
+noArvore* balancear(noArvore *no) {
+    int balanceamento = fatorBalanceamento(no);
+
+    if (balanceamento > 1) {
+        if (fatorBalanceamento(no->Esq) >= 0)
+            return rotacaoSimplesDireita(no);
+        else
+            return rotacaoDuplaEsquerda(no);
+    }
+    if (balanceamento < -1) {
+        if (fatorBalanceamento(no->Dir) <= 0)
+            return rotacaoSimplesEsquerda(no);
+        else
+            return rotacaoDuplaDireita(no);
+    }
+
+    return no;
+}
 
 int main() {
     int escolha, valor;
@@ -27,21 +117,7 @@ int main() {
         switch (escolha)
         {
         case 1:
-            arvore = criarArvore();
-            printf("Arvore criada");
-            break;
-
-        case 2:
-            printf("Insira o valor da raiz: ");
-            scanf("%d", &valor);
-            alocarRaiz(&arvore, valor);
-
-            printf("Valor da raiz: %d\n", arvore->valor);
-
-            break;
-
-        case 9:
-            exibirArvore(arvore);
+            
             break;
 
         default:
@@ -64,77 +140,4 @@ int menu() {
     scanf("%d", &escolha);
     printf("\n");
     return escolha;
-}
-
-noArvore* criarArvore() {
-    noArvore *raiz;
-    raiz = NULL;
-
-    return raiz;
-}
-
-void alocarRaiz(noArvore **arvore, int valor) {
-    if (*arvore == NULL) {
-        noArvore* ptRaiz = (noArvore*) malloc(sizeof(noArvore));
-        ptRaiz->Esq = ptRaiz->Dir = NULL;
-        ptRaiz->valor = valor;
-
-        *arvore = ptRaiz;
-    }
-}
-
-/*
-Algoritmo 6.3 – InserirFilhoEsq
- Entradas: Arv (TipoArvore)
- ValorPai, ValorFilho (TipoInfo)
- Saídas: Arv (TipoArvore)
- Sucesso (lógico)
-Variáveis auxiliares: Pai, Novo (TipoPtNodo)
-início
- Sucesso ← falso
- Pai ← Localizar(Arv, ValorPai)
- se (Pai ≠ nulo) e (Pai↑.Esq = nulo)
- então início
- Sucesso ← verdadeiro
- alocar(Novo)
- Novo↑.Dir ← Novo↑.Esq ← nulo
- Novo↑.Info ← ValorFilho
- Pai↑.Esq ← Novo
- fim
-fim
-*/
-noArvore* inserirFilhoEsq(noArvore *raiz, int valorPai, int valorFilho) {
-    
-}
-
-noArvore* localizar(noArvore *arvore, int valor) {
-    InicializarPilhaArr(Base, Topo);
-    int Achou = 0;
-    InserirPilhaArr(Pilha, Lim, Topo, Arv, InsOK);
-    while (Topo >= 0) && (!Achou) && (!InsOK);
-    faça início
-    RemoverPilhaArr(Pilha, Topo, Base, OK, PtAux);
-    se (PtAux ≠ nulo) e (OK)
-    então se PtAux↑.Info = Valor
-    então início
-    Achou ← verdadeiro;
-    Localizar ← PtAux;
-    fim
-    senão início
-    InserirPilhaArr(Pilha, Lim, Topo, PtAux↑.Dir, InsOK);
-    InserirPilhaArr(Pilha, Lim, Topo, PtAux↑.Esq, InsOK);
-    fim
-    fim
-    se (não Achou)
-    então Localizar ← nulo
-    fim
-}
-
-void exibirArvore(noArvore *raiz) {
-    if (raiz == NULL) return;
-
-    printf("%d ", raiz->valor);
-    exibirArvore(raiz->Esq);
-    exibirArvore(raiz->Dir);
-    printf("\n");
 }
