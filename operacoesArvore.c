@@ -255,13 +255,24 @@ noArvore* apagar(noArvore *no, int valor) {
     } else if (valor > no->valor) {
         no->Dir = apagar(no->Dir, valor);
     } else {
-        if (no->Esq == NULL || no->Dir == NULL) { // se tiver algum filho, troca ele de lugar
-            noArvore *temp = no->Esq == NULL ? no->Dir : no->Esq;
+        if (no->Esq == NULL) { // se tiver algum filho, troca ele de lugar
+            noArvore *temp = no->Dir;
             if (temp == NULL) {
                 temp = no;
                 no = NULL;
             } else {
-                no = temp;
+                no->valor = temp->valor;
+                no->Dir = NULL;
+            }
+            free(temp);
+        } else if (no->Dir == NULL) { // se tiver algum filho, troca ele de lugar
+            noArvore *temp = no->Esq;
+            if (temp == NULL) {
+                temp = no;
+                no = NULL;
+            } else {
+                no->valor = temp->valor;
+                no->Esq = NULL;
             }
             free(temp);
         } else {
