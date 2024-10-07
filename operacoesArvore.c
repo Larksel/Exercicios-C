@@ -35,15 +35,7 @@ int main() {
     int escolha, valor;
     noArvore *raiz;
     raiz = NULL;
-/**
- * inserir
- * buscar
- * mostrar
- * remover
- * sair
- */
-    mostrarArvore(raiz, 0);
-
+    
     do {
         escolha = menu();
 
@@ -52,23 +44,32 @@ int main() {
         case 1:
             printf("Digite o valor: ");
             scanf("%d", &valor);
-            inserir(raiz, valor);
+            raiz = inserir(raiz, valor);
             break;
 
         case 2:
-
+            printf("Digite o valor a ser buscado: ");
+            scanf("%d", &valor);
+            noArvore *noBuscado = buscar(raiz, valor);
+            if (noBuscado == NULL) {
+                printf("Numero %d nao encontrado.\n", valor);
+            } else {
+                printf("Numero %d encontrado.\n", valor);
+            }
             break;
 
         case 3:
-            printf("Digite o valor: ");
-            scanf("%d", &valor);
-            inserir(raiz, valor);
+            mostrarArvore(raiz, 0);
             break;
 
-        case 4:
-            printf("Digite o valor: ");
+        case 5:
+            printf("Digite o valor a ser removido: ");
             scanf("%d", &valor);
-            inserir(raiz, valor);
+            apagar(raiz, valor);
+            break;
+
+        case 0:
+            printf("Encerrando...\n");
             break;
 
         default:
@@ -86,7 +87,8 @@ int menu() {
     printf("[1] Inserir\n");
     printf("[2] Buscar\n");
     printf("[3] Mostrar\n");
-    printf("[4] Remover\n");
+    printf("[4] Percorrer\n");
+    printf("[5] Remover\n");
     printf("[0] Sair\n");
     printf("Escolha uma opcao: ");
     scanf("%d", &escolha);
@@ -234,8 +236,8 @@ noArvore* apagar(noArvore *no, int valor) {
     } else if (valor > no->valor) {
         no->Dir = apagar(no->Dir, valor);
     } else {
-        if (no->Esq == NULL || no->Dir == NULL) {
-            noArvore *temp = no->Esq; // Pega o nó mais a direita do filho esquerdo
+        if (no->Esq == NULL || no->Dir == NULL) { // se tiver algum filho, troca ele de lugar
+            noArvore *temp = no->Esq == NULL ? no->Dir : no->Esq;
             if (temp == NULL) {
                 temp = no;
                 no = NULL;
@@ -244,8 +246,8 @@ noArvore* apagar(noArvore *no, int valor) {
             }
             free(temp);
         } else {
-            noArvore *temp = valorMinimo(no->Dir);
-            no->valor = temp->valor;
+            noArvore *temp = valorMinimo(no->Dir); // Procura o no mais a esquerda do filho direito
+            no->valor = temp->valor; 
             no->Dir = apagar(no->Dir, temp->valor);
         }
     }
