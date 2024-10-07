@@ -12,6 +12,7 @@ typedef struct noArvore {
 } noArvore;
 
 int menu();
+int menuMostrar();
 int max(int a, int b);
 noArvore* criarNo(int valor);
 int altura(noArvore *no);
@@ -32,7 +33,7 @@ void posOrdem(noArvore *no);
 void mostrarArvore(noArvore *no, int espaco);
 
 int main() {
-    int escolha, valor;
+    int escolha, valor, ordem;
     noArvore *raiz;
     raiz = NULL;
     
@@ -62,10 +63,30 @@ int main() {
             mostrarArvore(raiz, 0);
             break;
 
+        case 4:
+            ordem = menuMostrar();
+
+            switch (ordem)
+            {
+            case 1:
+                preOrdem(raiz);
+                break;
+            case 2:
+                emOrdem(raiz);
+                break;
+            case 3:
+                posOrdem(raiz);
+                break;
+            
+            default:
+                break;
+            }
+            break;
+
         case 5:
             printf("Digite o valor a ser removido: ");
             scanf("%d", &valor);
-            apagar(raiz, valor);
+            raiz = apagar(raiz, valor);
             break;
 
         case 0:
@@ -97,17 +118,15 @@ int menu() {
 }
 
 int menuMostrar() {
-    int escolha;
-    printf("\n======== M E N U ========\n");
-    printf("[1] Inserir\n");
-    printf("[2] Buscar\n");
-    printf("[3] Mostrar\n");
-    printf("[4] Remover\n");
-    printf("[0] Sair\n");
+    int ordem;
+    printf("\n======== Percorrer ========\n");
+    printf("[1] Pre-Ordem\n");
+    printf("[2] Em Ordem\n");
+    printf("[3] Pos-Ordem\n");
     printf("Escolha uma opcao: ");
-    scanf("%d", &escolha);
+    scanf("%d", &ordem);
     printf("\n");
-    return escolha;
+    return ordem;
 }
 
 int max(int a, int b)
